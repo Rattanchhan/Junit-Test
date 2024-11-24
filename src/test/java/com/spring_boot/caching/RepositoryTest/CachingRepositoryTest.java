@@ -1,4 +1,4 @@
-package com.spring_boot.caching;
+package com.spring_boot.caching.RepositoryTest;
 
 import com.spring_boot.caching.model.Role;
 import com.spring_boot.caching.repository.RoleRepository;

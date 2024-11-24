@@ -1,4 +1,4 @@
-package com.spring_boot.caching;
+package com.spring_boot.caching.ServiceTest;
 import com.spring_boot.caching.clearCache.CacheClass;
 import com.spring_boot.caching.dto.role.request.RoleRequestUpdate;
 import com.spring_boot.caching.dto.role.request.SetPermissionItemRequest;
