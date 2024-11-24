@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: Caching-Demo
+  datasource:
+    url: jdbc:mysql://localhost:3306/caching_db_test
+    username: root
+    password: R@mySql@0900
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    show-sql: true
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+
+
