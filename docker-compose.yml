@@ -1,0 +1,24 @@
+services:
+  hazelcast:
+    image: hazelcast/hazelcast:latest
+    container_name: hazelcast
+    volumes:
+      - hazelcast-data:/opt/hazelcast
+    ports:
+      - "5701:5701"
+    environment:
+      - HZ_CLUSTERNAME=dev
+
+  management-center:
+    image: hazelcast/management-center:latest
+    container_name: management-center
+    depends_on:
+      - hazelcast
+    ports:
+      - "8080:8080"
+    environment:
+      - MC_DEFAULT_CLUSTER=dev
+      - MC_DEFAULT_CLUSTER_MEMBERS=hazelcast
+
+volumes:
+  hazelcast-data:

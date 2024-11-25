@@ -42,4 +42,6 @@ public interface RoleMapper {
     void fromRoleRequestUpdate(RoleRequestUpdate roleRequestUpdate,@MappingTarget Role role);
 
     RoleListResponse toRoleListResponse(Role role);
+
+    Role fromRoleRs(RoleRS roleRS);
 }

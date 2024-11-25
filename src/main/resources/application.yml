@@ -1,6 +1,11 @@
 spring:
   application:
     name: Caching-Demo
+
+  hazelcast:
+    cluster-name: dev
+    member-lists: localhost:5701
+
   datasource:
     url: jdbc:mysql://localhost:3306/caching_db
     username: root
@@ -12,4 +17,6 @@ spring:
     open-in-view: false
     hibernate:
       ddl-auto: update
+server:
+    port: 8081
 

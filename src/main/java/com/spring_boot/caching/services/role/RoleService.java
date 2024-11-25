@@ -25,5 +25,7 @@ public interface RoleService {
 
     Page<PermissionStatusResponse> listAllPermissions(BaseListingRQ request,Long roleId,String module);
 
+    RoleRS getRoleByName(String roleName);
+
 }
 

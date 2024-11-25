@@ -1,22 +1,37 @@
 package com.spring_boot.caching.clearCache;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import com.hazelcast.core.Hazelcast;
+import com.hazelcast.core.HazelcastInstance;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Component;
-import org.springframework.cache.Cache;
-
 @Component
-@Data
-@RequiredArgsConstructor
 public class CacheClass {
-    private final CacheManager cacheManager;
-    public void clearSpecificCache(String cacheName,Long Id) {
-        Cache cache = cacheManager.getCache(cacheName);
-        if(cache != null) {
-            cache.evict(Id);
-        }
-    }
+
+//    private final HazelcastInstance hazelcastInstance;
+//    @Autowired
+//    private CacheManager cacheManager;
+//
+//    public CacheClass() {
+//        this.hazelcastInstance = Hazelcast.newHazelcastInstance();
+//    }
+//
+//    public void clearSpecificCache(String cacheName,Long Id) {
+//        hazelcastInstance.getMap(cacheName).remove(Id);
+//    }
+//    public void clearAllCaches() {
+//        cacheManager.getCacheNames().forEach(cacheName -> {
+//            Cache cache = cacheManager.getCache(cacheName);
+//            if (cache != null) {
+//                cache.clear();
+//            }
+//        });
+//
+//        hazelcastInstance.getDistributedObjects().forEach(distributedObject -> {
+//            if (distributedObject instanceof com.hazelcast.map.IMap) {
+//                ((com.hazelcast.map.IMap<?, ?>) distributedObject).clear();
+//            }
+//        });
+//    }
+
 }

@@ -1,6 +1,7 @@
 package com.spring_boot.caching.controlle;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.*;
 import com.spring_boot.caching.base.BaseListingRQ;
 import com.spring_boot.caching.dto.permission.response.PermissionStatusResponse;
@@ -56,5 +57,10 @@ public class RoleController {
     public Page<PermissionStatusResponse>  listAllPermissions(BaseListingRQ baseListingRQ,@RequestParam(value = "roleId",required = false) String roleId,@RequestParam(value="module",required = false) String module){
     
         return roleService.listAllPermissions(baseListingRQ,roleId!=null?Long.parseLong(roleId):null,module);
+    }
+
+    @GetMapping("/cach")
+    public RoleRS getUsername(@Param("name") String name) {
+        return roleService.getRoleByName(name);
     }
 }

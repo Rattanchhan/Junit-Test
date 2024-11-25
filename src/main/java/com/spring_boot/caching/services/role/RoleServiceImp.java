@@ -5,15 +5,16 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import com.spring_boot.caching.clearCache.CacheClass;
+import com.spring_boot.caching.repository.RoleCachingJpaRepository;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import com.spring_boot.caching.base.BaseListingRQ;
 import com.spring_boot.caching.dto.permission.response.PermissionStatusResponse;
@@ -28,7 +29,7 @@ import com.spring_boot.caching.messageConstant.MessageConstant;
 import com.spring_boot.caching.model.Permission;
 import com.spring_boot.caching.model.Role;
 import com.spring_boot.caching.repository.PermissionRepository;
-import com.spring_boot.caching.repository.RoleRepository;
+import com.spring_boot.caching.repository.RoleJpaRepository;
 import org.springframework.cache.annotation.Cacheable;
 
 @Service
@@ -39,20 +40,23 @@ public class RoleServiceImp implements RoleService{
     private final CacheClass cache;
     private final RoleMapper roleMapper;
     private final PermissionRepository permissionRepository;
-    private final RoleRepository roleRepository;
+    private final RoleJpaRepository roleRepository;
+
+    private final RoleCachingJpaRepository roleCachingJpaRepository;
 
     @Override
-    @Cacheable(value = "roleList", key = "#request.query + '-' + #request.page + '-' + #request.size")
+//    @Cacheable(value = "roleList", key = "#request.query + '-' + #request.page + '-' + #request.size")
     public Page<RoleListResponse> getAll(BaseListingRQ request) {
         Page<Role> roleEntities = roleRepository.findByNameContainsOrderByNameAsc(request.getQuery(), request.getPageable());
         return roleEntities.map(roleMapper::toRoleListResponse);
     }
 
     @Override
-    @Cacheable(value = "role", key = "#Id")
+//    @Cacheable(value = "role", key = "#Id")
     public RoleRS getRoleById(Long Id) {
         Optional<Role> roleEntity = roleRepository.findByIdFetchPermission(Id);
         if(roleEntity.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND,MessageConstant.ROLE.ROLE_NOT_FOUND);
+//        cache.clearAllCaches();
         return roleMapper.fromRole(roleEntity.get());
     }
 
@@ -70,7 +74,7 @@ public class RoleServiceImp implements RoleService{
     }
 
     @Override
-    @CachePut(value = "role", key = "#Id")
+//    @CachePut(value = "role", key = "#Id")
     public RoleRS update(Long Id, RoleRequestUpdate roleRequestUpdate) {
         if(roleRepository.existsByCode(roleRequestUpdate.code())){
             throw new ResponseStatusException(HttpStatus.CONFLICT,MessageConstant.ROLEPROPERTY.CODE_HAS_EXISTING);
@@ -84,12 +88,12 @@ public class RoleServiceImp implements RoleService{
     }
 
     @Override
-    @CacheEvict(value = "role", key = "#Id")
+//    @CacheEvict(value = "role", key = "#Id")
     public RoleRS delete(Long Id) {
         Role role = roleRepository.findById(Id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,MessageConstant.ROLE.ROLE_NOT_FOUND));
         role.setDeletedAt(Instant.now());
         roleRepository.save(role);
-        cache.clearSpecificCache("role",Id);
+//        cache.clearSpecificCache("role",Id);
         throw new ResponseStatusException(HttpStatus.ACCEPTED,MessageConstant.ROLE.ROLE_DELETED_SUCCESSFULLY);
 
     }
@@ -121,5 +125,16 @@ public class RoleServiceImp implements RoleService{
         return permissionRepository.findAllPermission(roleId,module,request.getPageable());
     }
 
+    @Override
+    @Transactional
+    public RoleRS getRoleByName(String roleName) {
+        if (roleCachingJpaRepository.existsByName(roleName))
+            return roleMapper.fromRole(roleCachingJpaRepository.getRoleByName(roleName));
+        else {
+            Role role = roleRepository.findByNameAndDeletedAtIsNull(roleName);
+            roleCachingJpaRepository.save(role);
+            return roleMapper.fromRole(role);
+        }
+    }
 
 }

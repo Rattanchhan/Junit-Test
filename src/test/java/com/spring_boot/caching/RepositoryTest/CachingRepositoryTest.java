@@ -1,7 +1,7 @@
 package com.spring_boot.caching.RepositoryTest;
 
 import com.spring_boot.caching.model.Role;
-import com.spring_boot.caching.repository.RoleRepository;
+import com.spring_boot.caching.repository.RoleJpaRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -9,7 +9,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 @DataJpaTest
 public class CachingRepositoryTest {
     @Autowired
-    public RoleRepository roleRepository;
+    public RoleJpaRepository roleRepository;
     @Test
     public void repositoryTest(){
         Role role = new Role();

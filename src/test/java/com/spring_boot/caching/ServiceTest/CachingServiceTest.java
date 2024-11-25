@@ -9,7 +9,8 @@ import com.spring_boot.caching.messageConstant.MessageConstant;
 import com.spring_boot.caching.model.Permission;
 import com.spring_boot.caching.model.Role;
 import com.spring_boot.caching.repository.PermissionRepository;
-import com.spring_boot.caching.repository.RoleRepository;
+import com.spring_boot.caching.repository.RoleCachingJpaRepository;
+import com.spring_boot.caching.repository.RoleJpaRepository;
 import com.spring_boot.caching.services.role.RoleService;
 import com.spring_boot.caching.services.role.RoleServiceImp;
 import lombok.extern.slf4j.Slf4j;
@@ -37,19 +38,22 @@ public class CachingServiceTest {
     @Autowired
     private final RoleMapper roleMapper;
     private final PermissionRepository permissionRepository;
-    private final RoleRepository roleRepository;
+    private final RoleJpaRepository roleRepository;
+    private final RoleCachingJpaRepository roleCachingJpaRepository;
     private RoleService roleService;
 
     CachingServiceTest(){
         this.cache = Mockito.mock(CacheClass.class);
         this.roleMapper = Mockito.mock(RoleMapper.class);
         this.permissionRepository = Mockito.mock(PermissionRepository.class);
-        this.roleRepository = Mockito.mock(RoleRepository.class);
+        this.roleRepository = Mockito.mock(RoleJpaRepository.class);
+        this.roleCachingJpaRepository = Mockito.mock(RoleCachingJpaRepository.class);
+
     }
 
     @BeforeEach
     public void setUp() {
-        roleService = new RoleServiceImp(cache, roleMapper, permissionRepository, roleRepository);
+        roleService = new RoleServiceImp(cache, roleMapper, permissionRepository, roleRepository, roleCachingJpaRepository);
     }
 
     @Test
